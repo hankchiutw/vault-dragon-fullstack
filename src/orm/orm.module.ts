@@ -1,18 +1,23 @@
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { configFactory } from './config-factory';
+import { rootConfigFactory, testConfig } from './config';
 
+@Global()
 @Module({
   providers: [],
 })
 export class OrmModule {
   static forRoot() {
     return TypeOrmModule.forRootAsync({
-      useFactory: configFactory,
+      useFactory: rootConfigFactory,
       inject: [ConfigService],
     });
   }
 
   static forFeature = TypeOrmModule.forFeature;
+
+  static forTest() {
+    return TypeOrmModule.forRoot(testConfig);
+  }
 }
