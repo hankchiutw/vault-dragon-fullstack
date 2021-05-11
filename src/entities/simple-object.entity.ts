@@ -1,4 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class SimpleObject {
@@ -8,9 +13,9 @@ export class SimpleObject {
   @Column()
   key: string;
 
-  @Column()
+  @Column({ type: 'blob' })
   value: any;
 
-  @Column()
-  timestamp: number;
+  @CreateDateColumn()
+  createdAt: Date;
 }
