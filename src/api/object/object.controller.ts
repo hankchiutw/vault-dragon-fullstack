@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param } from '@nestjs/common';
+import { Controller, Post, Get, Body, Query, Param } from '@nestjs/common';
 import { ObjectService } from './object.service';
 import { CreateObjectDto } from './dto';
 
@@ -7,8 +7,8 @@ export class ObjectController {
   constructor(private objectService: ObjectService) {}
 
   @Get(':key')
-  findOne(@Param() params) {
-    return this.objectService.getLatest(params.key);
+  findOne(@Param('key') key: string, @Query('timestamp') timestamp: string) {
+    return this.objectService.getLatest(key, Number(timestamp));
   }
 
   @Post()

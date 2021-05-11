@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository, Repository } from '@app/orm';
 import { SimpleObject } from '@app/entities';
+import { LessThanOrEqual } from 'typeorm';
 import { CreateObjectDto } from './dto';
 
 @Injectable()
@@ -10,7 +11,24 @@ export class ObjectService {
     private objectRepo: Repository<SimpleObject>,
   ) {}
 
-  getLatest(key: string, before: number = Date.now()) {}
+  async getLatest(key: string, before: number) {
+    if (!before) {
+      before = Date.now();
+    }
+    const obj = await this.objectRepo.findOne({
+      where: {
+        createdAt: LessThanOrEqual(timestampToDBDate(before)),
+        key,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    return {
+      value: obj.value,
+    };
+  }
 
   async create(dto: CreateObjectDto) {
     const payload = Object.entries(dto)[0];
@@ -30,4 +48,9 @@ export class ObjectService {
       timestamp: obj.createdAt.getTime(),
     };
   }
+}
+
+function timestampToDBDate(timestamp: number) {
+  const isoString = new Date(timestamp).toISOString();
+  return isoString.replace('T', ' ');
 }
