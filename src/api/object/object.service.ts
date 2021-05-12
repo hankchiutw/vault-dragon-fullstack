@@ -11,7 +11,7 @@ export class ObjectService {
     private objectRepo: Repository<SimpleObject>,
   ) {}
 
-  async getLatest(key: string, before: number) {
+  async getLatest(key: string, before?: number) {
     if (!before) {
       before = Date.now();
     }
@@ -22,8 +22,13 @@ export class ObjectService {
       },
       order: {
         createdAt: 'DESC',
+        id: 'DESC',
       },
     });
+
+    if (!obj) {
+      return {};
+    }
 
     return {
       value: obj.value,

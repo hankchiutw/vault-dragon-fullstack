@@ -16,6 +16,6 @@ export class SimpleObject {
   @Column({ type: 'blob' })
   value: any;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ precision: 4 })
   createdAt: Date;
 }
